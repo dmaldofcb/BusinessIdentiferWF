@@ -1,4 +1,5 @@
-﻿using InclusionDiversityIdentifier.Models;
+﻿using InclusionDiversityIdentifier.Database;
+using InclusionDiversityIdentifier.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -12,17 +13,25 @@ namespace InclusionDiversityIdentifier.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        readonly ApplicationDBContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ApplicationDBContext ctx)
         {
             _logger = logger;
+            _context = ctx;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var query = _context.Businesses;
+            return View(query.ToList());
         }
+        //[HttpGet]
+        //public ActionResult GetBusiness()
+        //{
+            
 
+        //}
         public IActionResult Privacy()
         {
             return View();
