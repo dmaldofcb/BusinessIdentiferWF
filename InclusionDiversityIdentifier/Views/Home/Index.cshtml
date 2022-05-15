@@ -1,22 +1,36 @@
-﻿@model IEnumerable<Business> 
+﻿@using System.Data;
+@model IEnumerable<Business>
 @{
     ViewData["Title"] = "Home Page";
 }
+
 
 <div class="text-center">
     <h1 class="display-4">Welcome BOXERS Diversity</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
 <div>
-    <table>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.dunsNumId)
-                </td>
-            </tr>
-        }
+    <p>
+        @ViewBag.Secret1
+    </p>
+    <p>
+        @ViewBag.Secret2
+    </p>
+    <p>
+        @ViewBag.Secret3
+    </p>
+    <p>
+        @ViewBag.Secret4
+    </p>
+    @*<table>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.dunsNumId)
+                    </td>
+                </tr>
+            }
 
-    </table>
+        </table>*@
 </div>

@@ -1,4 +1,8 @@
+using InclusionDiversityIdentifier.BusinessLayer;
+using InclusionDiversityIdentifier.Config;
 using InclusionDiversityIdentifier.Database;
+using InclusionDiversityIdentifier.Services;
+using InclusionDiversityIdentifier.Services.ServiceInterfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -25,9 +29,16 @@ namespace InclusionDiversityIdentifier
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var appConfig = Configuration.GetSection("DiversityIdentifierConfig");
+            services.Configure<DiversityIdentifierConfig>(appConfig);
             services.AddControllersWithViews();
             services.AddDbContext<ApplicationDBContext>(options =>
             options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddTransient<IGoogleSearch, GoogleSearchService>();
+            services.AddTransient<IWebScrape, WebScrapeService>();
+            services.AddTransient<SearchBusinessDiverse>();
+            services.AddTransient<BusinessGoogleSearch>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
