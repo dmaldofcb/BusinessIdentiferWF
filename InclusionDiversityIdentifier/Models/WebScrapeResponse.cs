@@ -12,7 +12,7 @@ namespace InclusionDiversityIdentifier.Models
         public string extractedHtmlText { get; set; }
 
         [JsonPropertyName("all_links")]
-        public string extractedHtmlLinks { get; set; }
+        public List<htmlLink> extractedHtmlLinks { get; set; }
 
     }
 

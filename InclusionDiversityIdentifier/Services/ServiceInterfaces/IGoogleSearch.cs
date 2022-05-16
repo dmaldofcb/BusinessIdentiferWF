@@ -9,6 +9,6 @@ namespace InclusionDiversityIdentifier.Services.ServiceInterfaces
 {
     public interface IGoogleSearch
     {
-        Search PerformGoogleSearch(string querySearche);
+        Task<Search> PerformGoogleSearch(string querySearche);
     }
 }

@@ -1,6 +1,4 @@
-﻿using ExcelDataReader;
-using InclusionDiversityIdentifier.Database;
-using InclusionDiversityIdentifier.Models;
+﻿using InclusionDiversityIdentifier.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -11,81 +9,79 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Google.Apis.CustomSearchAPI;
-using RestSharp;
-using Google.Apis.CustomSearchAPI.v1;
-using Google.Apis.CustomSearchAPI.v1.Data;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using InclusionDiversityIdentifier.Config;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Configuration;
 using InclusionDiversityIdentifier.BusinessLayer;
 using InclusionDiversityIdentifier.Services.ServiceInterfaces;
+using InclusionDiversityIdentifier.Repository;
+using ClosedXML.Excel;
 
 namespace InclusionDiversityIdentifier.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly ApplicationDBContext _context;
-        private DiversityIdentifierConfig _diversityConfig;
-        private readonly IConfiguration _config = null;
-        private readonly BusinessGoogleSearch _businessSearch;
+        private readonly IBusinessRepo _businessRepo;
         private readonly SearchBusinessDiverse _searchBusinessDiverse;
-
-        public HomeController(ILogger<HomeController> logger, ApplicationDBContext ctx, IOptions<DiversityIdentifierConfig> opts, IConfiguration configuration, BusinessGoogleSearch search, SearchBusinessDiverse diverseBusiness)
+        public HomeController(ILogger<HomeController> logger, IBusinessRepo repo, SearchBusinessDiverse diverseBusiness)
         {
             _logger = logger;
-            _context = ctx;
-            _diversityConfig = opts.Value;
-            _config = configuration;
-            _businessSearch = search;
+            _businessRepo = repo;
             _searchBusinessDiverse = diverseBusiness;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
            
             //Get List of Business Names to Search on Google API
-            var googleSearchStrings = GetBusinessNames();
+            var businessList = await _businessRepo.GetAllBusiness();
+            var x = businessList.Take(2);
+            //Give List Business update diverse information
+            await _searchBusinessDiverse.CheckBusinessIsDiverse(x.ToList());
 
-            //Google search and retrive business URLs
-            //var businessUrls = _businessSearch.GetBusinessUrls("CP&y, Inc.");
+            //retrieve updated record Information
+            var updatedList = await _businessRepo.GetAllBusiness();
 
-            //search Business diverse
-            //var isWomenOwned = _searchBusinessDiverse.CheckBusinessIsWomenOwned(businessUrls.FirstOrDefault());
-
-            //scrape html for text
-            //var text = WebScrapeUrl(businessUrls.FirstOrDefault());
-
-            //check for keywords(women,veterans,deversity ...)
-            //not found scrape hmtl for page links check links (about, awards, culture)
-            //google to link that have tag  (about, awards, culture)
-
-
-
-            //var query2 = _context.Businesses;
-            ViewBag.Secret1 = _config.GetConnectionString("DefaultConnection");
-            ViewBag.Secret2 = _diversityConfig.GoogleSearchApiKey;
-            ViewBag.Secret3 = _diversityConfig.GoogleSearchCxKey;
-            ViewBag.Secret4 = _diversityConfig.ScrapingBeeApiKey;
-
-
-            return View();
+            return View(x.ToList());
         }
 
-        private List<string> GetBusinessNames()
+        public async Task<IActionResult> Export()
         {
-            var businessNames = new List<string>();
-            var businessTable = _context.Businesses;
-            List<Business> businessList = businessTable.ToList();
-            foreach (var buisness in businessList)
-            {
-                businessNames.Add(buisness.dunsName);
-            }
+            DataTable dt = new DataTable("sheet1");
+            dt.Columns.AddRange(new DataColumn[12] 
+                                { 
+                                    new DataColumn("dunsNum"),
+                                    new DataColumn("dunsName"),
+                                    new DataColumn("County"),
+                                    new DataColumn("Street Address"),
+                                    new DataColumn("City"),
+                                    new DataColumn("State"),
+                                    new DataColumn("Zip"),
+                                    new DataColumn("Phone"),
+                                    new DataColumn("Executive Contact 1"),
+                                    new DataColumn("Executive Contact 2"),
+                                    new DataColumn("Is Women Owned"),
+                                    new DataColumn("Minority Owned Description"),
+                                });
 
-            return businessNames;
+            var records = await _businessRepo.GetAllBusiness();
+
+            foreach (var record in records)
+            {
+                dt.Rows.Add(record.dunsNumId, record.dunsName, record.county, record.streetAddress, record.city, record.state, record.zipCode, record.phoneNumber, record.executiveContact, record.executiveContact2,record.isWomanOwned,record.minorityOwnedDesc);
+            }
+            string excelName = $"DiversityBusiness-{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.xlsx";
+
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                wb.Worksheets.Add(dt);
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelName);
+                }
+            }
         }
 
         public IActionResult Privacy()

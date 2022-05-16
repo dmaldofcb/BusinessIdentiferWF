@@ -22,13 +22,13 @@ namespace InclusionDiversityIdentifier.Services
             _diversityConfig = opts.Value;
         }
 
-        public WebScrapeResponse WebExtractHtmlPage(string searchUrl)
+        public async Task<WebScrapeResponse> WebExtractHtmlPageAsync(string searchUrl)
         {
             var client = new RestClient(baseUrl);
 
             RestRequest request = RequestExtractHtml(searchUrl, "false", "{ \"text\": \"body\"}");
 
-            IRestResponse response = client.Execute(request);
+            var response = await client.ExecuteAsync(request);
             if (response.IsSuccessful)
             {
                 var content = JsonSerializer.Deserialize<WebScrapeResponse>(response.Content);
@@ -41,10 +41,24 @@ namespace InclusionDiversityIdentifier.Services
             }
         }
 
-        public WebScrapeResponse WebExtractLinkPage(string searchUrl)
+        public async Task<WebScrapeResponse> WebExtractLinkPage(string searchUrl)
         {
 
-            throw new NotImplementedException();
+            var client = new RestClient(baseUrl);
+            string extractRules = "{\"all_links\":{\"selector\":\"a\",\"type\":\"list\",\"output\":{\"anchor\":\"a\",\"href\":{\"selector\":\"a\",\"output\":\"@href\"}}}}";
+            RestRequest request = RequestExtractHtml(searchUrl, "false", extractRules);
+
+            IRestResponse response = await client.ExecuteAsync(request);
+            if (response.IsSuccessful)
+            {
+                var content = JsonSerializer.Deserialize<WebScrapeResponse>(response.Content);
+
+                return content;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         private RestRequest RequestExtractHtml(string searchUrl, string param1, string param2)

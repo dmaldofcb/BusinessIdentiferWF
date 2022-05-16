@@ -4,33 +4,50 @@
     ViewData["Title"] = "Home Page";
 }
 
+<div class="container">
+    <div class="col text-center">
+        <form method="post" asp-controller="Home" asp-action="Export">
+            <button class="btn btn-lg btn-secondary order-button" style="margin-top: 20px; margin-bottom: 20px">ExportExcel</button>
+        </form>
+        <div>
+            <table class="table table-sm table-bordered table-condensed">
+                <thead>
+                    <tr>
+                        <th>
+                            Duns Number
+                        </th>
+                        <th>
+                            Business Name
+                        </th>
+                        <th>
+                            Is Women Owned
+                        </th>
+                        <th>
+                            Minority Owned Description
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.dunsNumId)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.dunsName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.isWomanOwned)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.minorityOwnedDesc)
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome BOXERS Diversity</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
-<div>
-    <p>
-        @ViewBag.Secret1
-    </p>
-    <p>
-        @ViewBag.Secret2
-    </p>
-    <p>
-        @ViewBag.Secret3
-    </p>
-    <p>
-        @ViewBag.Secret4
-    </p>
-    @*<table>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.dunsNumId)
-                    </td>
-                </tr>
-            }
-
-        </table>*@
 </div>

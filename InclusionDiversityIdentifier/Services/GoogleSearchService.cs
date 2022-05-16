@@ -23,13 +23,13 @@ namespace InclusionDiversityIdentifier.Services
             _diversityConfig = opts.Value;
         }
 
-        public Search PerformGoogleSearch(string querySearch)
+        public async Task<Search> PerformGoogleSearch(string querySearch)
         {
             CustomSearchAPIService searchService = CustomSearchApiSetup();
             ListRequest searchRequest = SetupSearch(searchService, querySearch);
             try
             {
-                Search searchResult = searchRequest.Execute();
+                Search searchResult = await searchRequest.ExecuteAsync();
 
                 return searchResult;
             }

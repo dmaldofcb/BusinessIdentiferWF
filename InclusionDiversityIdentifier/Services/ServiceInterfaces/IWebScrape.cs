@@ -8,8 +8,8 @@ namespace InclusionDiversityIdentifier.Services.ServiceInterfaces
 {
     public interface IWebScrape
     {
-        WebScrapeResponse WebExtractLinkPage(string searchUrl);
-        WebScrapeResponse WebExtractHtmlPage(string searchUrl);
+        Task<WebScrapeResponse> WebExtractLinkPage(string searchUrl);
+        Task<WebScrapeResponse> WebExtractHtmlPageAsync(string searchUrl);
 
     }
 }

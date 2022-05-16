@@ -1,6 +1,7 @@
 using InclusionDiversityIdentifier.BusinessLayer;
 using InclusionDiversityIdentifier.Config;
 using InclusionDiversityIdentifier.Database;
+using InclusionDiversityIdentifier.Repository;
 using InclusionDiversityIdentifier.Services;
 using InclusionDiversityIdentifier.Services.ServiceInterfaces;
 using Microsoft.AspNetCore.Builder;
@@ -36,6 +37,7 @@ namespace InclusionDiversityIdentifier
             options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
             services.AddTransient<IGoogleSearch, GoogleSearchService>();
             services.AddTransient<IWebScrape, WebScrapeService>();
+            services.AddTransient<IBusinessRepo, BusinessRepo>();
             services.AddTransient<SearchBusinessDiverse>();
             services.AddTransient<BusinessGoogleSearch>();
 
