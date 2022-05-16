@@ -92,6 +92,23 @@ body {
 }
 
 .btn-secondary:active:focus {
-  background-color: #FDCF83;
+    background-color: #FDCF83;
+}
+
+.btn-primary:hover {
+    background-color: #FDCF83;
+}
+
+.btn-primary:active:focus {
+    background-color: #F6A61F;
+}
+
+.progress, .alert-success {
+    position: fixed;
+    height: 100px;
+    top: 50%;
+    left: 0;
+    width: 90%;
+    margin-left: 5%;
 }
 

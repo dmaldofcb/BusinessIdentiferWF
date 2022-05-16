@@ -30,6 +30,7 @@ namespace InclusionDiversityIdentifier.Repository
 
             businessRecord.isWomanOwned = businessUpdate.isWomanOwned;
             businessRecord.minorityOwnedDesc = businessUpdate.minorityOwnedDesc;
+            businessRecord.url = businessUpdate.urlLink.FirstOrDefault();
 
             _context.Update(businessRecord);
 

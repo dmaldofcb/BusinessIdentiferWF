@@ -21,5 +21,7 @@ namespace InclusionDiversityIdentifier.Models
         public string executiveContact2 { get; set; }
         public bool isWomanOwned { get; set; }
         public string minorityOwnedDesc { get; set; }
+        public string url { get; set; }
+
     }
 }
