@@ -33,17 +33,11 @@ namespace InclusionDiversityIdentifier.Controllers
 
         public async Task<IActionResult> Index()
         {
-           
+            
             //Get List of Business Names to Search on Google API
             var businessList = await _businessRepo.GetAllBusiness();
-            var x = businessList.Take(2);
-            //Give List Business update diverse information
-            await _searchBusinessDiverse.CheckBusinessIsDiverse(x.ToList());
 
-            //retrieve updated record Information
-            var updatedList = await _businessRepo.GetAllBusiness();
-
-            return View(x.ToList());
+            return View(businessList);
         }
 
         public async Task<IActionResult> Export()
@@ -82,6 +76,18 @@ namespace InclusionDiversityIdentifier.Controllers
                     return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelName);
                 }
             }
+        }
+
+        public async Task<IActionResult> ProcessBusinessRecords()
+        {
+
+            var businessList = await _businessRepo.GetAllBusiness();
+            //Give List Business update diverse information
+            await _searchBusinessDiverse.CheckBusinessIsDiverse(businessList);
+
+            //retrieve updated record Information
+            var updatedList = await _businessRepo.GetAllBusiness();
+            return View("Index", updatedList);
         }
 
         public IActionResult Privacy()

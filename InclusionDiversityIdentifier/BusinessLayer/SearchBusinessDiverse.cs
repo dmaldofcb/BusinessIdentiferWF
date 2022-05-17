@@ -113,20 +113,24 @@ namespace InclusionDiversityIdentifier.BusinessLayer
 
         private async Task<BusinessDiverseInfo> CheckOtherPagesContainInformationAsync(BusinessDiverseInfo businessInfo, WebScrapeResponse htmlPage)
         {
-            List<htmlLink> links = new List<htmlLink>();
-            foreach (var pageLink in htmlPage.extractedHtmlLinks)
+            //no links found return with no changes
+            if (htmlPage != null && htmlPage.extractedHtmlLinks != null)
             {
-                foreach (var word in keywordLinks)
+                List<htmlLink> links = new List<htmlLink>();
+                foreach (var pageLink in htmlPage.extractedHtmlLinks)
                 {
-                    var value = pageLink.anchorTag.Contains(word, StringComparison.OrdinalIgnoreCase);
-                    if (value)
+                    foreach (var word in keywordLinks)
                     {
-                        links.Add(pageLink);
+                        var value = pageLink.anchorTag.Contains(word, StringComparison.OrdinalIgnoreCase);
+                        if (value)
+                        {
+                            links.Add(pageLink);
+                        }
                     }
                 }
-            }
 
-            await NavigateLinksCheckDiversityAsync(businessInfo, links);
+                await NavigateLinksCheckDiversityAsync(businessInfo, links); 
+            }
 
             return businessInfo;
         }

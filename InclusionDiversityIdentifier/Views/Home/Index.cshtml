@@ -9,6 +9,10 @@
         <form method="post" asp-controller="Home" asp-action="Export">
             <button class="btn btn-lg btn-secondary order-button" style="margin-top: 20px; margin-bottom: 20px">ExportExcel</button>
         </form>
+        <form method="post" asp-controller="Home" asp-action="ProcessBusinessRecords">
+            <button id="ProcessRecords" class="btn btn-lg btn-secondary order-button" style="margin-top: 20px; margin-bottom: 20px">Process</button>
+        </form>
+
         <div>
             <table class="table table-sm table-bordered table-condensed">
                 <thead>
@@ -24,6 +28,9 @@
                         </th>
                         <th>
                             Minority Owned Description
+                        </th>
+                        <th>
+                            Business Url Searched
                         </th>
                     </tr>
                 </thead>
@@ -42,6 +49,9 @@
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.minorityOwnedDesc)
+                            </td>
+                            <td>
+                                <a href="@item.url">@item.url</a>
                             </td>
                         </tr>
                     }
