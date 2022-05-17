@@ -34,10 +34,6 @@ namespace InclusionDiversityIdentifier.UnitTests
             var businessParam2 = new Business { dunsName = "Interior Systems Contract Group, Inc." };
             businessToDiverse.Add(businessParam1);
             businessToDiverse.Add(businessParam2);
-            //var controller = new SearchBusinessDiverse(_scraperService.Object,_businessSearch.Object,_businessRepo.Object);
-            //Task<bool> task = Task.Run(() => controller.CheckBusinessIsDiverse(businessToDiverse));
-            //task.Wait();
-            //bool result = task.Result;
             Assert.AreEqual(expected, true);
         }
     }
